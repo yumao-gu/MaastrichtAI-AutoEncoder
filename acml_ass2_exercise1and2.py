@@ -17,7 +17,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 stride = 1
 padding = 1
 batch_size = 16
-input_gamma = [0.1, 0.5, 1.5, 3]
+input_gamma = [1, 0.5, 1.5, 3]
 # data_path = './'
 data_path = '/content/drive/My Drive/Colab Notebooks/'
 test_batch_size = 1000
@@ -100,46 +100,53 @@ def ycbr_to_rgb(input_img):
     return output / 255
 
 ###### net model for reconstructure ######
-model = nn.Sequential(OrderedDict([
-    ('conv1', nn.Conv2d(4, 16, 3, stride=stride, padding=padding)),
-    ('relu1', nn.LeakyReLU(l_relu_slope)),
-    ('conv2', nn.Conv2d(16, 16, 3, stride=stride, padding=padding)),
-    ('relu2', nn.LeakyReLU(l_relu_slope)),
-    ('conv3', nn.Conv2d(16, 16, 3, stride=2, padding=padding)),
-    ('relu3', nn.LeakyReLU(l_relu_slope)),
-    ('conv4', nn.Conv2d(16, 32, 3, stride=stride, padding=padding)),
-    ('relu4', nn.LeakyReLU(l_relu_slope)),
-    ('conv5', nn.Conv2d(32, 32, 3, stride=2, padding=padding)),
-    ('relu5', nn.LeakyReLU(l_relu_slope)),
-    ('unsample1', nn.Upsample(scale_factor=(2, 2))),
-    ('convtranspose1', nn.ConvTranspose2d(32, 32, 3, stride, padding)),
-    ('relu6', nn.LeakyReLU(l_relu_slope)),
-    ('convtranspose2', nn.ConvTranspose2d(32, 16, 3, stride, padding)),
-    ('relu7', nn.LeakyReLU(l_relu_slope)),
-    ('unsample2', nn.Upsample(scale_factor=(2, 2))),
-    ('convtranspose3', nn.ConvTranspose2d(16, 8, 3, stride, padding)),
-    ('relu8', nn.LeakyReLU(l_relu_slope)),
-    ('convtranspose4', nn.ConvTranspose2d(8, 2, 3, stride, padding)),
-    ('relu9', nn.Sigmoid()),
-])).to(device)
+# model = nn.Sequential(OrderedDict([
+#     ('conv1', nn.Conv2d(4, 16, 3, stride=stride, padding=padding)),
+#     ('relu1', nn.LeakyReLU(l_relu_slope)),
+#     ('conv2', nn.Conv2d(16, 16, 3, stride=stride, padding=padding)),
+#     ('relu2', nn.LeakyReLU(l_relu_slope)),
+#     ('conv3', nn.Conv2d(16, 16, 3, stride=2, padding=padding)),
+#     ('relu3', nn.LeakyReLU(l_relu_slope)),
+#     ('conv4', nn.Conv2d(16, 32, 3, stride=stride, padding=padding)),
+#     ('relu4', nn.LeakyReLU(l_relu_slope)),
+#     ('conv5', nn.Conv2d(32, 32, 3, stride=2, padding=padding)),
+#     ('relu5', nn.LeakyReLU(l_relu_slope)),
+#     ('unsample1', nn.Upsample(scale_factor=(2, 2))),
+#     ('convtranspose1', nn.ConvTranspose2d(32, 32, 3, stride, padding)),
+#     ('relu6', nn.LeakyReLU(l_relu_slope)),
+#     ('convtranspose2', nn.ConvTranspose2d(32, 16, 3, stride, padding)),
+#     ('relu7', nn.LeakyReLU(l_relu_slope)),
+#     ('unsample2', nn.Upsample(scale_factor=(2, 2))),
+#     ('convtranspose3', nn.ConvTranspose2d(16, 8, 3, stride, padding)),
+#     ('relu8', nn.LeakyReLU(l_relu_slope)),
+#     ('convtranspose4', nn.ConvTranspose2d(8, 2, 3, stride, padding)),
+#     ('relu9', nn.Sigmoid()),
+# ])).to(device)
 
 ###### net model for reconstructure ######
-# model = nn.Sequential(OrderedDict([
-#           ('conv1', nn.Conv2d(1,8,3,stride,padding)),
-#           ('relu1', nn.ReLU()),
-#           ('pool1', nn.MaxPool2d(2)),
-#           ('conv2', nn.Conv2d(8,12,3,stride,padding)),
-#           ('relu2', nn.ReLU()),
-#           ('pool2', nn.MaxPool2d(2)),
-#           ('conv3', nn.Conv2d(12,16,3,stride,padding)),
-#           ('relu3', nn.ReLU()),
-#           ('unsample1', nn.Upsample(scale_factor=(2,2))),
-#           ('convtranspose1', nn.ConvTranspose2d(16,12,3,stride,padding)),
-#           ('relu4', nn.ReLU()),
-#           ('unsample2', nn.Upsample(scale_factor=(2,2))),
-#           ('convtranspose2', nn.ConvTranspose2d(12,2,3,stride,padding)),
-#           ('relu5', nn.ReLU()),
-#         ])).to(device)
+model = nn.Sequential(OrderedDict([
+          ('conv1', nn.Conv2d(3,12,3,stride,padding)),
+          ('relu1', nn.LeakyReLU(l_relu_slope)),
+          ('pool1', nn.MaxPool2d(2)),
+          # ('pool1', nn.Conv2d(8,8,3,2,padding)),
+          # ('conv2', nn.Conv2d(8,12,3,stride,padding)),
+          # ('relu2', nn.LeakyReLU(l_relu_slope)),
+          # ('pool2', nn.MaxPool2d(2)),
+          # ('pool2', nn.Conv2d(12,12,3,2,padding)),
+          ('conv3', nn.Conv2d(12,16,3,stride,padding)),
+          ('relu3', nn.LeakyReLU(l_relu_slope)),
+          # ('pool0', nn.MaxPool2d(2)),
+          # ('conv0', nn.Conv2d(16,32,3,stride,padding)),
+          # ('relu0', nn.LeakyReLU(l_relu_slope)),
+          # ('unsample0', nn.Upsample(scale_factor=(2,2))),
+          # ('convtranspose0', nn.ConvTranspose2d(32,16,3,stride,padding)),
+          # ('unsample1', nn.Upsample(scale_factor=(2,2))),
+          # ('convtranspose1', nn.ConvTranspose2d(16,12,3,stride,padding)),
+          # ('relu4', nn.LeakyReLU(l_relu_slope)),
+          ('unsample2', nn.Upsample(scale_factor=(2,2))),
+          ('convtranspose2', nn.ConvTranspose2d(16,3,3,stride,padding)),
+          ('sigmoid', nn.Sigmoid()),
+        ])).to(device)
 
 ###### transform ######
 # normalize = transforms.Normalize(mean=[0.4914, 0.4822, 0.4465],
@@ -185,9 +192,9 @@ classes = ('plane', 'car', 'bird', 'cat',
 ###### https://zhuanlan.zhihu.com/p/29920135
 ###### https://blog.csdn.net/bvl10101111/article/details/72616378
 criterion = nn.MSELoss()
-# optimizer = optim.Adam(model.parameters(), lr=lr)
+optimizer = optim.Adam(model.parameters(), lr=lr)
 # optimizer = optim.SGD(model.parameters(), lr=lr, momentum=momentum)
-optimizer = optim.RMSprop(model.parameters(), lr=lr)
+# optimizer = optim.RMSprop(model.parameters(), lr=lr)
 
 ###### train function ######
 def train(model, device, train_loader, optimizer, epoch):
@@ -195,17 +202,9 @@ def train(model, device, train_loader, optimizer, epoch):
     train_loss = 0.0
     for batch_idx, (data, target) in enumerate(train_loader):  # 从数据加载器迭代一个batch的数据
         data, target = data.to(device), target.to(device)  # 将数据存储CPU或者GPU
-        input_size = data.size()
-        gray_data = rgb_to_grayscale(data)
-        input = Variable(data.data.new(input_size[0], 4, input_size[2], input_size[3]))
-        for i in range(4):
-            gamma = input_gamma[i]
-            input[:, i, :, :] = torchvision.transforms.functional.adjust_gamma(gray_data, gamma)[:, 0, :, :]
-        output = model(input)  # 喂入数据并前向传播获取输出
-        r_output_image = rgb_to_cbcr(data)
-
+        output = model(data)  # 喂入数据并前向传播获取输出
         optimizer.zero_grad()  # 清除所有优化的梯度
-        loss = criterion(r_output_image, output)  # 调用损失函数计算损失
+        loss = criterion(data, output)  # 调用损失函数计算损失
         loss.backward()  # 反向传播
         optimizer.step()  # 更新参数
         if batch_idx % log_interval == 0:  # 根据设置的显式间隔输出训练日志
@@ -224,17 +223,10 @@ def test(model, device, test_loader):
     with torch.no_grad():  # 禁用梯度计算
         for data, target in test_loader:  # 从数据加载器迭代一个batch的数据
             data, target = data.to(device), target.to(device)
-            input_size = data.size()
-            gray_data = rgb_to_grayscale(data)
-            input = Variable(data.data.new(input_size[0], 4, input_size[2], input_size[3]))
-            for i in range(4):
-                gamma = input_gamma[i]
-                input[:, i, :, :] = torchvision.transforms.functional.adjust_gamma(gray_data, gamma)[:, 0, :, :]
-            output = model(input)  # 喂入数据并前向传播获取输出
-            r_output_image = rgb_to_cbcr(data)
+            output = model(data)  # 喂入数据并前向传播获取输出
             
             optimizer.zero_grad()  # 清除所有优化的梯度
-            test_loss += criterion(r_output_image, output)  # sum up batch loss
+            test_loss += criterion(data, output)  # sum up batch loss
         test_loss /= len(test_loader)
         print('Test set: Average loss: {:.4f}'.format(test_loss))
     return test_loss.item()
@@ -246,17 +238,10 @@ def validate(model, device, valid_loader):
     with torch.no_grad():  # 禁用梯度计算
         for data, target in valid_loader:  # 从数据加载器迭代一个batch的数据
             data, target = data.to(device), target.to(device)
-            input_size = data.size()         
-            gray_data = rgb_to_grayscale(data)
-            input = Variable(data.data.new(input_size[0], 4, input_size[2], input_size[3]))
-            for i in range(4):
-                gamma = input_gamma[i]
-                input[:, i, :, :] = torchvision.transforms.functional.adjust_gamma(gray_data, gamma)[:, 0, :, :]
-            output = model(input)  # 喂入数据并前向传播获取输出
-            r_output_image = rgb_to_cbcr(data)
+            output = model(data)  # 喂入数据并前向传播获取输出
 
             optimizer.zero_grad()  # 清除所有优化的梯度
-            valid_loss += criterion(r_output_image, output)  # sum up batch loss
+            valid_loss += criterion(data, output)  # sum up batch loss
         valid_loss /= len(valid_loader)
         print('Valid set: Average loss: {:.4f}'.format(valid_loss))
     return valid_loss.item()
@@ -265,10 +250,6 @@ losses = {'train': [], 'val': [], 'test': []}
 
 ###### main function ######
 def main():
-    losses['train'].append(0.)
-    losses['val'].append(0.)
-    test_loss = test(model, device, test_loader)
-    losses['test'].append(test_loss)
     for epoch in range(1, epochs + 1):  # 循环调用train() and test() 进行epochs迭代
         train_loss = train(model, device, train_loader, optimizer, epoch)
         val_loss = validate(model, device, valid_loader)
@@ -280,6 +261,28 @@ def main():
     print("loss['train'] {}".format(losses['train']))
     print("loss['val'] {}".format(losses['val']))
     print("loss['test'] {}".format(losses['test']))
+
+    x = np.arange(0, len(losses['test']), 1)
+    y=[]
+    for data in losses['train']:
+        y.append(data)
+    y = np.array(y)
+    plt.plot(x, y, color='r', linestyle="-", linewidth=1, label='train')
+
+    y=[]
+    for data in losses['val']:
+        y.append(data)
+    y = np.array(y)
+    plt.plot(x, y, color='y', linestyle="-", linewidth=1, label='val')
+
+    y=[]
+    for data in losses['test']:
+        y.append(data)
+    y = np.array(y)
+    plt.plot(x, y, color='g', linestyle="-", linewidth=1, label='test')
+    plt.legend(loc='upper left', bbox_to_anchor=(0.5, 0.95))
+    plt.title("loss J")
+    plt.show()
 
 # %% run main
 main()
@@ -293,7 +296,6 @@ def imshow(img, cmap=None):
     plt.show()
 
 # get some random training images
-# dataiter = iter(test_loader)
 dataiter = iter(train_loader)
 images, labels = dataiter.next()
 input = None
@@ -303,23 +305,10 @@ gray_data = None
 model.eval()
 with torch.no_grad():  # 禁用梯度计算
     data, target = images.to(device), labels.to(device)
-    input_size = data.size()
-    gray_data = rgb_to_grayscale(data)
-    input = Variable(data.data.new(input_size[0], 4, input_size[2], input_size[3]))
-    for i in range(4):
-        gamma = input_gamma[i]
-        input[:, i, :, :] = torchvision.transforms.functional.adjust_gamma(gray_data, gamma)[:, 0, :, :]
-    output = model(input)  # 喂入数据并前向传播获取输出
-
-input_size = data[:1].size()
-r_image = Variable(data[:1].data.new(*input_size))
-r_image[:1,0, :, :] = gray_data[:1, 0, :, :]
-r_image[:1,1, :, :] = output[:1, 0, :, :]
-r_image[:1,2, :, :] = output[:1, 1, :, :]
-r_image = ycbr_to_rgb(r_image)
+    output = model(data)  # 喂入数据并前向传播获取输出
 
 plt.imshow(images[0].transpose(1, 2).T.cpu())
 plt.show()
-imshow(torchvision.utils.make_grid(gray_data[0].cpu()))
-plt.imshow(r_image[0].transpose(1, 2).T.cpu())
+# imshow(torchvision.utils.make_grid(gray_data[0].cpu()))
+plt.imshow(output[0].transpose(1, 2).T.cpu())
 plt.show()
